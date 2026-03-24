@@ -19,9 +19,7 @@ export default function SupportPage() {
     try {
       const res = await fetch('/api/tickets', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, subject, description }),
       });
 
@@ -44,68 +42,101 @@ export default function SupportPage() {
   }
 
   return (
-    <main className="max-w-2xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-2">Contatta il supporto</h1>
-      <p className="text-gray-600 mb-6">
-        Inserisci la tua email, l’oggetto e la descrizione del problema.
-      </p>
-
-      {success && (
-        <div className="mb-4 rounded-lg border border-green-300 bg-green-50 p-4">
-          Richiesta inviata con successo.
-        </div>
-      )}
-
-      {error && (
-        <div className="mb-4 rounded-lg border border-red-300 bg-red-50 p-4">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="grid gap-4">
+    <main className="min-h-screen bg-slate-50 px-6 py-12">
+      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2">
         <div>
-          <label className="block mb-1 text-sm font-medium">Email</label>
-          <input
-            type="email"
-            className="w-full rounded-lg border p-3"
-            placeholder="nome@esempio.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <p className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-slate-600 shadow-sm">
+            Supporto utenti
+          </p>
+
+          <h1 className="mt-6 text-4xl font-bold tracking-tight">
+            Invia una richiesta di assistenza
+          </h1>
+
+          <p className="mt-4 max-w-lg text-slate-600">
+            Compila il modulo con la tua email, l’oggetto e una descrizione chiara del
+            problema. Il team di supporto visualizzerà il ticket nella dashboard
+            amministrativa.
+          </p>
+
+          <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="grid gap-4">
+              <div>
+                <p className="text-sm font-semibold text-slate-700">Come scrivere bene il ticket</p>
+                <ul className="mt-3 space-y-2 text-sm text-slate-600">
+                  <li>• Spiega il problema in modo concreto</li>
+                  <li>• Indica cosa stavi facendo quando è successo</li>
+                  <li>• Aggiungi eventuali dettagli utili</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Oggetto</label>
-          <input
-            type="text"
-            className="w-full rounded-lg border p-3"
-            placeholder="Oggetto della richiesta"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            required
-          />
-        </div>
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <h2 className="text-2xl font-semibold">Nuovo ticket</h2>
+          <p className="mt-2 text-sm text-slate-500">
+            Inserisci i dati richiesti per inviare la segnalazione.
+          </p>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Descrizione</label>
-          <textarea
-            className="w-full rounded-lg border p-3 min-h-40"
-            placeholder="Descrivi il problema"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
+          {success && (
+            <div className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-4 text-green-800">
+              Richiesta inviata con successo.
+            </div>
+          )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-lg bg-black px-4 py-3 text-white disabled:opacity-50"
-        >
-          {loading ? 'Invio...' : 'Invia richiesta'}
-        </button>
-      </form>
+          {error && (
+            <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="mt-6 grid gap-5">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">Email</label>
+              <input
+                type="email"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500"
+                placeholder="nome@esempio.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">Oggetto</label>
+              <input
+                type="text"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500"
+                placeholder="Oggetto della richiesta"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">Descrizione</label>
+              <textarea
+                className="min-h-40 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500"
+                placeholder="Descrivi il problema"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="rounded-2xl bg-slate-900 px-5 py-3 font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+            >
+              {loading ? 'Invio...' : 'Invia richiesta'}
+            </button>
+          </form>
+        </div>
+      </div>
     </main>
   );
 }
