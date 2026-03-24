@@ -1,0 +1,37 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyAdminSession } from '@/lib/admin-session';
+
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // se non è /admin → lascia passare
+  if (!pathname.startsWith('/admin')) {
+    return NextResponse.next();
+  }
+
+  // la pagina login è pubblica
+  if (pathname === '/admin/login') {
+    return NextResponse.next();
+  }
+
+  const token = req.cookies.get('admin_session')?.value;
+
+  // nessun cookie → redirect login
+  if (!token) {
+    return NextResponse.redirect(new URL('/admin/login', req.url));
+  }
+
+  const session = await verifyAdminSession(token);
+
+  // token invalido → redirect login
+  if (!session || session.role !== 'admin') {
+    return NextResponse.redirect(new URL('/admin/login', req.url));
+  }
+
+  // tutto ok → continua
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ['/admin/:path*'],
+};
