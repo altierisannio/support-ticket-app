@@ -38,11 +38,11 @@ export default function UpdateTicketForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4 max-w-md">
+    <form onSubmit={handleSubmit} className="grid gap-5">
       <div>
-        <label className="block mb-1 text-sm font-medium">Stato</label>
+        <label className="mb-2 block text-sm font-medium text-slate-700">Stato</label>
         <select
-          className="w-full rounded-lg border p-3"
+          className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
         >
@@ -53,9 +53,9 @@ export default function UpdateTicketForm({
       </div>
 
       <div>
-        <label className="block mb-1 text-sm font-medium">Priorità</label>
+        <label className="mb-2 block text-sm font-medium text-slate-700">Priorità</label>
         <select
-          className="w-full rounded-lg border p-3"
+          className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500"
           value={priority}
           onChange={(e) => setPriority(e.target.value)}
         >
@@ -68,9 +68,9 @@ export default function UpdateTicketForm({
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg bg-black px-4 py-3 text-white disabled:opacity-50"
+        className="rounded-2xl bg-slate-900 px-4 py-3 font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
       >
-        {loading ? 'Salvataggio...' : 'Salva'}
+        {loading ? 'Salvataggio...' : 'Salva modifiche'}
       </button>
     </form>
   );
