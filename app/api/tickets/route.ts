@@ -1,5 +1,6 @@
 import { sql } from '@/lib/db';
 import { z } from 'zod';
+import crypto from 'crypto';
 
 const createTicketSchema = z.object({
   email: z.string().email(),
@@ -12,9 +13,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     const data = createTicketSchema.parse(body);
 
+    const publicToken = crypto.randomBytes(32).toString('hex');
+
     const inserted = await sql`
-      INSERT INTO tickets (customer_email, subject, description)
-      VALUES (${data.email}, ${data.subject}, ${data.description})
+      INSERT INTO tickets (customer_email, subject, description, public_token)
+      VALUES (${data.email}, ${data.subject}, ${data.description}, ${publicToken})
       RETURNING *
     `;
 
