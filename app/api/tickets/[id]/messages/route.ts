@@ -1,21 +1,40 @@
 import { sql } from '@/lib/db';
 import { z } from 'zod';
+import { cookies } from 'next/headers';
+import { verifyAdminSession } from '@/lib/admin-session';
 
 const messageSchema = z.object({
   message: z.string().min(1),
 });
 
+async function requireAdmin() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('admin_session')?.value;
+
+  if (!token) {
+    return false;
+  }
+
+  const session = await verifyAdminSession(token);
+  return !!session && session.role === 'admin';
+}
+
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const isAdmin = await requireAdmin();
+
+  if (!isAdmin) {
+    return Response.json({ error: 'Non autorizzato' }, { status: 401 });
+  }
+
   const { id } = await params;
 
   try {
     const body = await req.json();
     const data = messageSchema.parse(body);
 
-    // verifica ticket esiste
     const ticket = await sql`
       SELECT id FROM tickets WHERE id = ${id} LIMIT 1
     `;

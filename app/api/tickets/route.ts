@@ -7,16 +7,6 @@ const createTicketSchema = z.object({
   description: z.string().min(10),
 });
 
-export async function GET() {
-  const rows = await sql`
-    SELECT *
-    FROM tickets
-    ORDER BY created_at DESC
-  `;
-
-  return Response.json(rows);
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -34,11 +24,9 @@ export async function POST(req: Request) {
     `;
 
     return Response.json(inserted[0], { status: 201 });
-  } catch (error) {
-    console.error(error);
-
+  } catch {
     return Response.json(
-      { error: 'Dati non validi o errore database' },
+      { error: 'Dati non validi' },
       { status: 400 }
     );
   }
