@@ -1,16 +1,31 @@
+import { sql } from '@/lib/db';
 import UpdateTicketForm from './update-ticket-form';
 import ReplyForm from './reply-form';
+import Messages from './messages';
 
 async function getTicket(id: string) {
-  const res = await fetch(`http://localhost:3000/api/tickets/${id}`, {
-    cache: 'no-store',
-  });
+  const tickets = await sql`
+    SELECT *
+    FROM tickets
+    WHERE id = ${id}
+    LIMIT 1
+  `;
 
-  if (!res.ok) {
+  if (tickets.length === 0) {
     throw new Error('Ticket non trovato');
   }
 
-  return res.json();
+  const messages = await sql`
+    SELECT *
+    FROM ticket_messages
+    WHERE ticket_id = ${id}
+    ORDER BY created_at ASC
+  `;
+
+  return {
+    ticket: tickets[0],
+    messages,
+  };
 }
 
 export default async function AdminTicketPage({
@@ -39,7 +54,6 @@ export default async function AdminTicketPage({
         Stato: {data.ticket.status} · Priorità: {data.ticket.priority}
       </div>
 
-      {/* FORM AGGIORNAMENTO */}
       <div className="mt-8">
         <UpdateTicketForm
           ticketId={data.ticket.id}
@@ -48,28 +62,10 @@ export default async function AdminTicketPage({
         />
       </div>
 
-      {/* MESSAGGI */}
       <h2 className="text-xl font-semibold mt-10 mb-3">Messaggi</h2>
 
-      <div className="grid gap-3">
-        {data.messages.map((msg: any) => (
-          <div
-            key={msg.id}
-            className={`rounded-xl p-4 ${
-              msg.author_type === 'agent'
-                ? 'bg-blue-50 border border-blue-200'
-                : 'bg-gray-50 border'
-            }`}
-          >
-            <p>{msg.message}</p>
-            <p className="text-xs text-gray-500 mt-2">
-              {msg.author_type} {msg.author_email ? `· ${msg.author_email}` : ''}
-            </p>
-          </div>
-        ))}
-      </div>
+      <Messages messages={data.messages} />
 
-      {/* RISPOSTA ADMIN */}
       <ReplyForm ticketId={data.ticket.id} />
     </main>
   );

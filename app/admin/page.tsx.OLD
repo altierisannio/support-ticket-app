@@ -1,14 +1,15 @@
 import Link from 'next/link';
-import { sql } from '@/lib/db';
 
 async function getTickets() {
-  const tickets = await sql`
-    SELECT *
-    FROM tickets
-    ORDER BY created_at DESC
-  `;
+  const res = await fetch('http://localhost:3000/api/tickets', {
+    cache: 'no-store',
+  });
 
-  return tickets;
+  if (!res.ok) {
+    throw new Error('Errore caricamento ticket');
+  }
+
+  return res.json();
 }
 
 export default async function AdminDashboardPage() {
